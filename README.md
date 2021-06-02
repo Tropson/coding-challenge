@@ -1,3 +1,24 @@
+# Notes
+
+## The solution
+### Communication
+As the internal communication protocol I used RabbitMQ. Firstly because it's a well built message queuing system that I have experience with and I know it is reliable and secondly because of the possibility to manually acknowledge messages. This makes it possible to implement fault tolerance, such as if the service is down and cannot consume the message, the message will still be persisted on the queue and sent to the consumer again when it becomes available again. This makes the data stream more stable.
+### Storage
+For storage I used Redis, which is an in-memory key-value pair store. Moreover, the data that needs to be stored is a simple response from the service, so it doesn't require extensive querying. Redis makes accessing and writing the data easy and fast, mainly because of the read/write speeds it can achieve by utilizing memory as its storage unit.
+### Scheduling
+For scheduling I used cron, mainly because of familiarity and because I find it more stable than using intervals in JavaScript.
+
+## How to run
+As the solution has been containerized and the Redis instance is running in docker, to run the soluton docker-compose can be used. A docker-compose.yml file is included in the repository which already includes everything needed to run the application.
+
+To start both services, as well as the Redis instance run the following command:
+```
+docker-compose up
+```
+## Short-comings and future improvements
+As this was my first time using NestJs (I have most of my experience in ExpressJS), I am sure that not all of the design principles were followed that NestJS would require. Similarly, tests are not included because of the shortage on time due to researching and learning NestJS while making the solution.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Welcome to Welds coding-challenge
 
 ## Introduction
