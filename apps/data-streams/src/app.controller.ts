@@ -1,13 +1,16 @@
 import { Controller, Delete, Get,Post } from '@nestjs/common';
+import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { AppService } from './app.service';
+
+var data = null;
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  getData(): string {
+    return JSON.parse(data);
   }
 
   @Post('/worker')
@@ -20,5 +23,14 @@ export class AppController {
   stopWorker(): string{
     this.appService.stopWorker();
     return "Worker stopped";
+  }
+
+  @EventPattern("data")
+  handleDataEvent(@Payload() payload,@Ctx() context:RmqContext){
+    console.log("Incoming data");
+    const channel = context.getChannelRef();
+    const originalMsg = context.getMessage();
+    data=payload;
+    channel.ack(originalMsg);
   }
 }

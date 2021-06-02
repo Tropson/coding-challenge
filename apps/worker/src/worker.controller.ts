@@ -10,7 +10,7 @@ export class WorkerController {
   startInterval(@Ctx() context:RmqContext){
     const channel = context.getChannelRef();
     const originalMsg = context.getMessage();
-
+    this.workerService.startInterval();
     channel.ack(originalMsg);
     console.log("Worker started");
   }
@@ -19,12 +19,8 @@ export class WorkerController {
   stopInterval(@Ctx() context:RmqContext){
     const channel = context.getChannelRef();
     const originalMsg = context.getMessage();
-
+    this.workerService.stopInterval();
     channel.ack(originalMsg);
     console.log("Worker stopped");
-  }
-
-  getHello(): string {
-    return this.workerService.getHello();
   }
 }

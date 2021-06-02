@@ -15,6 +15,10 @@ const initMicroservice = async (app: INestApplication) => {
     options:{
       urls:[rmq_url],
       queue:'data_queue',
+      noAck:false,
+      queueOptions:{
+        durable:true
+      }
     }
   });
   await app.startAllMicroservicesAsync();
