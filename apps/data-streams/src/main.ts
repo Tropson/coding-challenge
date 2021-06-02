@@ -1,10 +1,21 @@
 import { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import {Transport} from '@nestjs/microservices';
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 
 const initMicroservice = async (app: INestApplication) => {
+  let rmq_url=process.env.RABBITMQ_URL;
+  console.log(rmq_url);
+  // Setup communication protocol here
   app.connectMicroservice({
-        // Setup communication protocol here
+    transport:Transport.RMQ,
+    options:{
+      urls:[rmq_url],
+      queue:'data_queue',
+    }
   });
   await app.startAllMicroservicesAsync();
 };
