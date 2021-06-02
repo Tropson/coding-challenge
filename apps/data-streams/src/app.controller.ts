@@ -2,15 +2,19 @@ import { Controller, Delete, Get,Post } from '@nestjs/common';
 import { Ctx, EventPattern, Payload, RmqContext } from '@nestjs/microservices';
 import { AppService } from './app.service';
 
-var data = null;
-
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
-  getData(): string {
-    return JSON.parse(data);
+  async getData() {
+    try{
+      let data = await this.appService.getData();
+      return JSON.parse(data);
+    }
+    catch(err){
+      return err;
+    }
   }
 
   @Post('/worker')
@@ -30,7 +34,7 @@ export class AppController {
     console.log("Incoming data");
     const channel = context.getChannelRef();
     const originalMsg = context.getMessage();
-    data=payload;
+    this.appService.persistData(payload);
     channel.ack(originalMsg);
   }
 }
